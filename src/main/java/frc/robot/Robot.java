@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -26,11 +27,15 @@ public class Robot extends TimedRobot {
 
   private Command m_johnShooterCommand;
 
-  private static Joystick m_driverControlJoystick = new Joystick(Constants.OIConstants.kDriverControllerPort);
+  private static XboxController m_driverControlJoystick = new XboxController(Constants.OIConstants.kDriverControllerPort);
 
-  private static Joystick m_shooterControlJoystick = new Joystick(Constants.OIConstants.kDriverControllerPort); // Check Port - Allesio
+  private static XboxController m_shooterControlJoystick = new XboxController(Constants.OIConstants.kDriverControllerPort);
 
   private Command m_shooterCommand;
+
+  private Command m_driveCommand;
+
+  private Command m_shoulderCommand;
 
 
   /**
@@ -97,7 +102,18 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+
     }
+    m_shooterCommand = m_robotContainer.getShootCommand();
+    m_driveCommand = m_robotContainer.getDriveCommand();
+    m_shoulderCommand = m_robotContainer.getShoulderCommand();
+
+    m_shoulderCommand.schedule();
+    m_driveCommand.schedule();
+    m_shooterCommand.schedule();
+
+
+
   }
 
   /** This function is called periodically during operator control. */
@@ -115,11 +131,11 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {}
 
-  public static Joystick getDriveControlJoystick() {
+  public static XboxController getDriveControlJoystick() {
     return m_driverControlJoystick;
   }
 
-  public static Joystick getShooterLogi() {
+  public static XboxController getShooterLogi() {
     return m_shooterControlJoystick;
   }
 }

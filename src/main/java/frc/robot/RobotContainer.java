@@ -20,10 +20,10 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.JohnShooterCommand;
-import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.ShoulderCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.JohnShooter;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.Shoulder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -43,6 +43,16 @@ public class RobotContainer {
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
+  // The shooter's controller
+  XboxController m_shooterController = new XboxController(OIConstants.kShooterControllerPort);
+
+  private JohnShooter shooter = new JohnShooter();
+  private JohnShooterCommand shootCommand = new JohnShooterCommand(shooter);
+
+  private Shoulder shoulder = new Shoulder();
+  private ShoulderCommand shoulderCommand = new ShoulderCommand(shoulder);
+
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -51,6 +61,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Configure default commands
+    /* 
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
@@ -61,6 +72,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true),
             m_robotDrive));
+    */
   }
 
   /**
@@ -128,4 +140,13 @@ public class RobotContainer {
   public Command getDriveCommand(){
     return new DriveCommand(m_robotDrive);
   }
+
+  public Command getShootCommand() {
+    return shootCommand;
+  }
+
+  public Command getShoulderCommand(){
+    return shoulderCommand;
+  }
+
 }

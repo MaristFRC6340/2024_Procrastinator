@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,9 +22,9 @@ public class JohnShooter extends SubsystemBase {
 
   public JohnShooter() {
     leftMotor = new CANSparkMax(20, MotorType.kBrushless);  // NEO Motor
-    rightMotor = new CANSparkMax(21, MotorType.kBrushless); // NEO Motor
-    leftFeeder = new CANSparkMax(22, MotorType.kBrushed);   // BAG Motor
-    rightFeeder = new CANSparkMax(23, MotorType.kBrushed);  // BAG Motor
+    rightMotor = new CANSparkMax(22, MotorType.kBrushless); // NEO Motor
+    leftFeeder = new CANSparkMax(23, MotorType.kBrushless);   // NEO Motor
+    rightFeeder = new CANSparkMax(21, MotorType.kBrushless);  // NEO Motor
   }
 
   public void shooterPower(double power) {

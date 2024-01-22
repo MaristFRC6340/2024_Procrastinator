@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.JohnShooter;
-import frc.robot.subsystems.ShooterSubsystem;
 
 public class JohnShooterCommand extends Command {
   /** Creates a new ShooterCommand. */
@@ -29,13 +28,21 @@ public class JohnShooterCommand extends Command {
 
     // Listers
     // Joystic 
-    if (Robot.getShooterLogi().getYButton()) {  // Y
-      johnShooterSystem.shooterPower(0.9);
-      johnShooterSystem.feederPower(0.8);
+    if (Robot.getDriveControlJoystick().getYButton()) {  // Y
+      johnShooterSystem.shooterPower(1);
+      johnShooterSystem.feederPower(1);
+    }
+    else if(Robot.getDriveControlJoystick().getAButton()){
+      johnShooterSystem.feederPower(-.5);
+      johnShooterSystem.shooterPower(-.2);
+    }
+    else if (Robot.getDriveControlJoystick().getRightTriggerAxis() >= .5){
+      johnShooterSystem.feederPower(.5);
+      johnShooterSystem.shooterPower(0);
     }
     else{
-      johnShooterSystem.shooterPower(0.0);
-      johnShooterSystem.feederPower(0.0);
+      johnShooterSystem.shooterPower(0);
+      johnShooterSystem.feederPower(0);
     }
 
   }
