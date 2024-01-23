@@ -53,7 +53,7 @@ public class SpeakerAutoAlignCommand extends Command{
                 MathUtil.applyDeadband(-leftY, 0.06),
                 MathUtil.applyDeadband(-leftX, 0.06),
                 MathUtil.applyDeadband(-turnPower, 0.06),
-                false);
+                false, true);
         
     }
 
@@ -66,9 +66,4 @@ public class SpeakerAutoAlignCommand extends Command{
     public boolean isFinished() {
         return false;
     }
-
-
-
-
-
 }

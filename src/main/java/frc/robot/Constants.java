@@ -140,4 +140,11 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
+
+  public static final class LimelightConstants{
+    public static final double speakerAimtx = -20.89;
+    public static final double speakerAimty = 2.82;
+    public static final double kPX = .01;
+    public static final double kPY = .01;
+  }
 }
