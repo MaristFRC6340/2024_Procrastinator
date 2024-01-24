@@ -52,9 +52,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-    JohnShooter shooter;
-  Shoulder shoulder;
-
+  JohnShooter shooter = new JohnShooter();
+  Shoulder shoulder = new Shoulder();
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 

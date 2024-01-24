@@ -36,6 +36,8 @@ public class DriveCommand extends Command {
   // For PID Control
   double turnPower = 0;
 
+  private boolean fieldCentric = true;
+
 
   /** Creates a new DriveCommand. */
   public DriveCommand(DriveSubsystem drive) {
@@ -49,6 +51,7 @@ public class DriveCommand extends Command {
 
     // Use addRequirements() here to declare subsystem dependencies.
     m_robotDrive = drive;
+    addRequirements(drive);
   }
 
   // Called when the command is initially scheduled.
@@ -74,26 +77,28 @@ public class DriveCommand extends Command {
     // leftY = Robot.getDriveControlJoystick().getRawAxis(1);
     rightX = Robot.getDriveControlJoystick().getRawAxis(4); 
 
-
+/**
     if (Robot.getDriveControlJoystick().getRawAxis(2) > 0.5) {
       ledMode.setDouble(3);
       double error = tx.getDouble(0);
       turnPower = kP * error;
+      leftX=turnPower;
       System.out.println(tx.getDouble(0) + ", " + turnPower);
-      
+      fieldCentric=false;
     }
     else {
       ledMode.setDouble(1);
       turnPower = 0;
+      fieldCentric=true;
     }
 
-
+*/
 
     m_robotDrive.drive(
                 MathUtil.applyDeadband(-leftY*speedControl, 0.06),
                 MathUtil.applyDeadband(-leftX*speedControl, 0.06),
                 MathUtil.applyDeadband(-rightX*speedControl, 0.06),
-                true, true);
+                fieldCentric, true);
 
                 
     if(Robot.getDriveControlJoystick().getPOV()!=-1){ // Left Stick Button

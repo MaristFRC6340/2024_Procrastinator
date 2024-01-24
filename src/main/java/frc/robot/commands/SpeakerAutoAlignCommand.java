@@ -37,6 +37,7 @@ public class SpeakerAutoAlignCommand extends Command{
         ledMode.setDouble(3); // On
 
     }
+    
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override

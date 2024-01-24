@@ -28,7 +28,13 @@ public class JohnShooterCommand extends Command {
 
     // Listers
     // Joystic 
-    if (Robot.getDriveControlJoystick().getYButton()) {  // Y
+    if (Robot.getDriveControlJoystick().getLeftTriggerAxis() >= .5 && Robot.getDriveControlJoystick().getYButton()){
+      johnShooterSystem.indexerPower(1);
+      johnShooterSystem.feederPower(1);
+      johnShooterSystem.shooterPower(1);
+
+    }
+    else if (Robot.getDriveControlJoystick().getYButton()) {  // Y
       johnShooterSystem.shooterPower(1);
       johnShooterSystem.feederPower(1);
     }
@@ -37,14 +43,15 @@ public class JohnShooterCommand extends Command {
       johnShooterSystem.shooterPower(-.2);
     }
     else if (Robot.getDriveControlJoystick().getRightTriggerAxis() >= .5){
-      johnShooterSystem.feederPower(.5);
+      johnShooterSystem.feederPower(-.5);
       johnShooterSystem.shooterPower(0);
+      johnShooterSystem.indexerPower(-.3);
     }
     else{
       johnShooterSystem.shooterPower(0);
       johnShooterSystem.feederPower(0);
+      johnShooterSystem.indexerPower(0);
     }
-
   }
 
   // Called once the command ends or is interrupted.
