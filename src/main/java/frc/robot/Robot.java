@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
 
     m_shoulderCommand.schedule();
     m_driveCommand.schedule();
-    m_shooterCommand.schedule();
+    // m_shooterCommand.schedule();
 
 
 

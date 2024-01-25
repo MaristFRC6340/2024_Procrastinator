@@ -24,7 +24,7 @@ public class ShoulderCommand extends Command{
     if (Robot.getDriveControlJoystick().getXButton()) {  // Dpad UP
         shoulder.shoulderPower(-.2);
     }
-    else if(Robot.getDriveControlJoystick().getBButton()){
+    else if(Robot.getDriveControlJoystick().getAButton()){
         shoulder.shoulderPower(.2);
     }
     else{

@@ -22,7 +22,9 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.JohnShooterCommand;
+import frc.robot.commands.LaunchNoteCommand;
 import frc.robot.commands.ShoulderCommand;
+import frc.robot.commands.SpinUpShooterCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.JohnShooter;
 import frc.robot.subsystems.Shoulder;
@@ -89,6 +91,7 @@ public class RobotContainer {
     //             -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
     //             true, true),
     //         m_robotDrive));
+
     m_robotDrive.setDefaultCommand(m_DriveCommand);
 
     //Create sendable chooser and give it to the smartdashboard
@@ -110,10 +113,10 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
-    
-   
-
-   
+     y.whileTrue(new SpinUpShooterCommand(shooter).withTimeout(2)
+                  .andThen(new LaunchNoteCommand(shooter)).handleInterrupt(() -> {shooter.feederPower(0); 
+                  shooter.shooterPower(0); shooter.indexerPower(0);} ));
+     b.whileTrue(shooter.getIndexerIntakeCommand());
 
   }
 
@@ -201,22 +204,5 @@ public class RobotContainer {
 
   
 
-  //AUTO COMMANDS
 
-
-  // public Command getExamplePathAutoOnTheFly() {
-  //     List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
-  //       new Pose2d(1, 1, Rotation2d.fromDegrees(0)),
-  //       new Pose2d(3, 1, Rotation2d.fromDegrees(90)),
-  //       new Pose2d(5, 1, Rotation2d.fromDegrees(180))
-  //     );
-
-  //     PathPlannerPath path =  new PathPlannerPath(bezierPoints, new PathConstraints(3, 3, 2*Math.PI, 4*Math.PI), new GoalEndState(0, Rotation2d.fromDegrees(-90)));
-
-  //     return AutoBuilder.followPathWithEvents(path);
-  // }
-
-  // public Command getExampleAutoCommand() {
-  //   return new PathPlannerAuto("Example Auto");
-  // }
 }

@@ -13,6 +13,11 @@ public class JohnShooterCommand extends Command {
 
   private JohnShooter johnShooterSystem;
 
+  private Long storedTime;
+  private Long waitTime = (long) 2000;
+  private Long stopTime = (long) 3000;
+  private boolean isShooting = false;
+
   public JohnShooterCommand(JohnShooter johnShooter) {
     // Use addRequirements() here to declare subsystem dependencies.
     johnShooterSystem = johnShooter;
@@ -28,31 +33,28 @@ public class JohnShooterCommand extends Command {
 
     // Listers
     // Joystic 
-    if (Robot.getDriveControlJoystick().getLeftTriggerAxis() >= .5 && Robot.getDriveControlJoystick().getYButton()){
-      johnShooterSystem.indexerPower(1);
-      johnShooterSystem.feederPower(1);
-      johnShooterSystem.shooterPower(1);
+    if (Robot.getDriveControlJoystick().getLeftTriggerAxis() >= .5 && !isShooting){
+      isShooting = true;
+      storedTime = System.currentTimeMillis();
+    }    
+  
 
+    if (isShooting) {
+        johnShooterSystem.shooterPower(1);
+        if (System.currentTimeMillis() > waitTime + storedTime) {
+          johnShooterSystem.indexerPower(1);
+        }
+        if (System.currentTimeMillis() > waitTime + storedTime + stopTime) {
+          isShooting = false;
+        }
     }
-    else if (Robot.getDriveControlJoystick().getYButton()) {  // Y
-      johnShooterSystem.shooterPower(1);
-      johnShooterSystem.feederPower(1);
+    else {
+        johnShooterSystem.shooterPower(0);
+        johnShooterSystem.feederPower(0);
+        johnShooterSystem.indexerPower(0);
     }
-    else if(Robot.getDriveControlJoystick().getAButton()){
-      johnShooterSystem.feederPower(-.5);
-      johnShooterSystem.shooterPower(-.2);
-    }
-    else if (Robot.getDriveControlJoystick().getRightTriggerAxis() >= .5){
-      johnShooterSystem.feederPower(-.5);
-      johnShooterSystem.shooterPower(0);
-      johnShooterSystem.indexerPower(-.3);
-    }
-    else{
-      johnShooterSystem.shooterPower(0);
-      johnShooterSystem.feederPower(0);
-      johnShooterSystem.indexerPower(0);
-    }
-  }
+
+}
 
   // Called once the command ends or is interrupted.
   @Override
