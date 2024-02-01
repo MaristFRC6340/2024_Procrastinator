@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
     m_shoulderCommand = m_robotContainer.getShoulderCommand();
 
     m_shoulderCommand.schedule();
-    m_driveCommand.schedule();
+    //m_driveCommand.schedule();
     m_robotContainer.getIntakeCommand().schedule();
 
 

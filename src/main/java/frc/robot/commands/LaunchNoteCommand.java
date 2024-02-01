@@ -23,8 +23,8 @@ public class LaunchNoteCommand extends Command{
     //Called once when the command is initialized. 
   @Override
   public void initialize() {
-    m_JohnShooterSubsystem.shooterPower(0.8);
-    m_JohnShooterSubsystem.feederPower(0.8);
+    m_JohnShooterSubsystem.shooterPower(0.9);
+    m_JohnShooterSubsystem.feederPower(1);
     // m_JohnShooterSubsystem.indexerPower(1); Removed due to change in shooter design
   }
 

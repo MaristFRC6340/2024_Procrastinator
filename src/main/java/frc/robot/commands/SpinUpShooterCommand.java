@@ -24,7 +24,7 @@ public class SpinUpShooterCommand extends Command{
     //Called once when the command is initialized. 
   @Override
   public void initialize() {
-    m_JohnShooterSubsystem.shooterPower(0.8);
+    m_JohnShooterSubsystem.shooterPower(0.9);
     // m_JohnShooterSubsystem.feederPower(1); Taken out due to change in build
   }
 

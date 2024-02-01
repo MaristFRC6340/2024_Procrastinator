@@ -19,8 +19,8 @@ public class DriveCommand extends Command {
   // Field for DriveSubsystem
   private final DriveSubsystem m_robotDrive;
 
-  private double speedControl = 0.5;
-  private double rateLimit = 1.5;
+  private double speedControl = 1;
+  private double rateLimit = 1;
 
   private SlewRateLimiter filterX = new SlewRateLimiter(rateLimit);
   private SlewRateLimiter filterY = new SlewRateLimiter(rateLimit);

@@ -18,8 +18,8 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.ModuleConstants;
 
 public class MAXSwerveModule {
-  private final CANSparkMax m_drivingSparkMax;
-  private final CANSparkMax m_turningSparkMax;
+  public final CANSparkMax m_drivingSparkMax;
+  public final CANSparkMax m_turningSparkMax;
 
   private final RelativeEncoder m_drivingEncoder;
   private final AbsoluteEncoder m_turningEncoder;
@@ -104,6 +104,7 @@ public class MAXSwerveModule {
     // operation, it will maintain the above configurations.
     m_drivingSparkMax.burnFlash();
     m_turningSparkMax.burnFlash();
+
 
     m_chassisAngularOffset = chassisAngularOffset;
     m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition());
