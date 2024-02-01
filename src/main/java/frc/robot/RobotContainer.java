@@ -77,7 +77,6 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-
     // Configure the button bindings
     configureButtonBindings();
     // Configure default commands
@@ -113,9 +112,11 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+
      y.whileTrue(new SpinUpShooterCommand(shooter).withTimeout(2)
                   .andThen(new LaunchNoteCommand(shooter)).handleInterrupt(() -> {shooter.feederPower(0); 
                   shooter.shooterPower(0); shooter.indexerPower(0);} ));
+                  
      b.whileTrue(shooter.getIndexerIntakeCommand());
 
   }

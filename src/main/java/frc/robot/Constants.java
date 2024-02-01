@@ -147,4 +147,18 @@ public final class Constants {
     public static final double kPX = .01;
     public static final double kPY = .01;
   }
+
+  public static final class ShooterConstants {
+    public static final int kLeftShooterCanId = 20;
+    public static final int kRightShooterCanId = 21;
+    public static final int kLeftFeederCanId = 22;
+    public static final int kRightFeederCanId = 23;
+    public static final int kShootAngleCanId = 24;
+
+  }
+
+  public static final class IntakeConstants {
+    public static final int kIntakeAngleCanId = 30;
+    public static final int kIntakeMotorCanId = 31;
+  }
 }
