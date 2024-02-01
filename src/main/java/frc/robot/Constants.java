@@ -158,7 +158,7 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static final int kIntakeAngleCanId = 30;
-    public static final int kIntakeMotorCanId = 31;
+    public static final int kIntakeAngleCanId = 31;
+    public static final int kIntakeMotorCanId = 30;
   }
 }

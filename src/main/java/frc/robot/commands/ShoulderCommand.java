@@ -20,11 +20,11 @@ public class ShoulderCommand extends Command{
   public void execute() {
 
     // Listers
-    // Joystic 
-    if (Robot.getDriveControlJoystick().getXButton()) {  // Dpad UP
+    // Joystic - Set to Triggers
+    if (Robot.getDriveControlJoystick().getLeftTriggerAxis() > 0.5) {  // Left Trigger
         shoulder.shoulderPower(-.2);
     }
-    else if(Robot.getDriveControlJoystick().getAButton()){
+    else if(Robot.getDriveControlJoystick().getRightTriggerAxis() > 0.5){ // Right Trigger
         shoulder.shoulderPower(.2);
     }
     else{

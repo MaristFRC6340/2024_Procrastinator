@@ -21,14 +21,28 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_IntakeSubsystem.setIntakeAnglePower(1);
-    m_IntakeSubsystem.setIntakeMotorPower(1);
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    // Get Value and Set Intake Power
+    double intakePower = Robot.getShooterControlJoystick().getLeftTriggerAxis() - Robot.getShooterControlJoystick().getRightTriggerAxis();
+    m_IntakeSubsystem.setIntakeMotorPower(intakePower);
+
+    // Get Value and Set Angle Power
+    double anglePower = Robot.getShooterControlJoystick().getLeftY();
+
+    // Speed Controller
+    if (anglePower > 0.2) {
+      anglePower = 0.2;
+    }
+    if (anglePower < -0.2) {
+      anglePower = -0.2;
+    }
+
+    m_IntakeSubsystem.setIntakeAnglePower(anglePower);
   }
 
   // Called once the command ends or is interrupted.

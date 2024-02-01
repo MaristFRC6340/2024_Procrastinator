@@ -23,9 +23,9 @@ public class LaunchNoteCommand extends Command{
     //Called once when the command is initialized. 
   @Override
   public void initialize() {
-    m_JohnShooterSubsystem.shooterPower(1);
-    m_JohnShooterSubsystem.feederPower(1);
-    m_JohnShooterSubsystem.indexerPower(1);
+    m_JohnShooterSubsystem.shooterPower(0.8);
+    m_JohnShooterSubsystem.feederPower(0.8);
+    // m_JohnShooterSubsystem.indexerPower(1); Removed due to change in shooter design
   }
 
   // Called every time the scheduler runs while the command is scheduled. There should not be any listeners in this method.

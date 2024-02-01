@@ -24,8 +24,8 @@ public class SpinUpShooterCommand extends Command{
     //Called once when the command is initialized. 
   @Override
   public void initialize() {
-    m_JohnShooterSubsystem.shooterPower(1);
-    m_JohnShooterSubsystem.feederPower(1);
+    m_JohnShooterSubsystem.shooterPower(0.8);
+    // m_JohnShooterSubsystem.feederPower(1); Taken out due to change in build
   }
 
   // Called every time the scheduler runs while the command is scheduled. There should not be any listeners in this method.

@@ -55,9 +55,11 @@ public class JohnShooter extends SubsystemBase {
 
   public Command getIndexerIntakeCommand() {
     return this.startEnd(() -> {
-      this.indexerPower(.5);
+      this.shooterPower(-.5);
+      this.feederPower(-0.5);
     }, () -> {
-      this.indexerPower(0);
+      this.shooterPower(0);
+      this.feederPower(0);
     });
   }
 }

@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
 
   private static XboxController m_driverControlJoystick = new XboxController(Constants.OIConstants.kDriverControllerPort);
 
-  private static XboxController m_shooterControlJoystick = new XboxController(Constants.OIConstants.kDriverControllerPort);
+  private static XboxController m_shooterControlJoystick = new XboxController(Constants.OIConstants.kShooterControllerPort);
 
   private Command m_shooterCommand;
 
@@ -106,13 +106,13 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_shooterCommand = m_robotContainer.getShootCommand();
+    //m_shooterCommand = m_robotContainer.getShootCommand();
     m_driveCommand = m_robotContainer.getDriveCommand();
     m_shoulderCommand = m_robotContainer.getShoulderCommand();
 
     m_shoulderCommand.schedule();
     m_driveCommand.schedule();
-    // m_shooterCommand.schedule();
+    m_robotContainer.getIntakeCommand().schedule();
 
 
 
@@ -137,7 +137,7 @@ public class Robot extends TimedRobot {
     return m_driverControlJoystick;
   }
 
-  public static XboxController getShooterLogi() {
+  public static XboxController getShooterControlJoystick() {
     return m_shooterControlJoystick;
   }
 }
