@@ -70,11 +70,11 @@ public class DriveCommand extends Command {
   public void execute() {
     // Updated Drive Command
 
-    leftX = filterX.calculate(Robot.getDriveControlJoystick().getRawAxis(0));
-    leftY = filterY.calculate(Robot.getDriveControlJoystick().getRawAxis(1));
+    //leftX = filterX.calculate(Robot.getDriveControlJoystick().getRawAxis(0));
+    //leftY = filterY.calculate(Robot.getDriveControlJoystick().getRawAxis(1));
 
-    // leftX = Robot.getDriveControlJoystick().getRawAxis(0);
-    // leftY = Robot.getDriveControlJoystick().getRawAxis(1);
+    leftX = Robot.getDriveControlJoystick().getRawAxis(0);
+    leftY = Robot.getDriveControlJoystick().getRawAxis(1);
     rightX = Robot.getDriveControlJoystick().getRawAxis(4); 
 
 /**

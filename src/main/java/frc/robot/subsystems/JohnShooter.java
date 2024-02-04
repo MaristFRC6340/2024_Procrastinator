@@ -10,35 +10,29 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 
 
 
 public class JohnShooter extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
 
-  private CANSparkMax leftMotor;
-  private CANSparkMax rightMotor;
-
-  private CANSparkMax leftFeeder;
-  private CANSparkMax rightFeeder;
+  //private CANSparkMax topMotor;
+  //private CANSparkMax bottomMotor;
   //private CANSparkMax bottomIndexer;
   //private CANSparkMax indexer;
 
   public JohnShooter() {
-    leftMotor = new CANSparkMax(Constants.ShooterConstants.kLeftShooterCanId, MotorType.kBrushless);  // NEO Motor
-    rightMotor = new CANSparkMax(Constants.ShooterConstants.kRightShooterCanId, MotorType.kBrushless); // NEO Motor
-    leftFeeder = new CANSparkMax(Constants.ShooterConstants.kLeftFeederCanId, MotorType.kBrushless);   // NEO Motor
-    rightFeeder = new CANSparkMax(Constants.ShooterConstants.kRightFeederCanId, MotorType.kBrushless);  // NEO Motor
+    // topMotor = new CANSparkMax(ShooterConstants.kTopMotorCanID, MotorType.kBrushless);
+    // bottomMotor = new CANSparkMax(ShooterConstants.kBottomMotorCanID, MotorType.kBrushless);
   }
 
   public void shooterPower(double power) {
-    leftMotor.set(power);
-    rightMotor.set(-power);
+    //topMotor.set(power);
   }
 
   public void feederPower(double power) {
-    leftFeeder.set(power);
-    rightFeeder.set(-power);
+    //bottomMotor.set(power);
   }
 
   public void indexerPower(double power){

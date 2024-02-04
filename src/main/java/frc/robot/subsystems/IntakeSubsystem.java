@@ -30,8 +30,22 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.set(power);
   }
 
+  public void runIntake() {
+    intakeMotor.set(-.6);
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public Command getRunIntakeCommand(double power) {
+    return this.startEnd(
+      () -> {
+        setIntakeMotorPower(power);
+      }, 
+      () -> {
+        setIntakeMotorPower(0);
+      });
+  }
+
 }

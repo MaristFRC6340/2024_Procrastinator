@@ -30,8 +30,12 @@ public class IntakeCommand extends Command {
     // Get Value and Set Intake Power
     double intakePower = Robot.getShooterControlJoystick().getLeftTriggerAxis() - Robot.getShooterControlJoystick().getRightTriggerAxis();
 
+    double leftStick = Robot.getShooterControlJoystick().getLeftY();
+    if(Math.abs(leftStick)<.2) leftStick = 0;
     // Get Value and Set Angle Power
-    double anglePower = Robot.getShooterControlJoystick().getLeftY();
+    double anglePower = leftStick;
+
+    
 
     // Speed Controller
     if (anglePower > 0.2) {

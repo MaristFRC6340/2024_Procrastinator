@@ -149,11 +149,15 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final int kLeftShooterCanId = 20;
-    public static final int kRightShooterCanId = 21;
-    public static final int kLeftFeederCanId = 22;
-    public static final int kRightFeederCanId = 23;
-    public static final int kShootAngleCanId = 24;
+    public static final int kTopMotorCanID = 20;
+    public static final int kBottomMotorCanID = 22;
+
+    public static final int kWilliamShooterLeft = 21;
+    public static final int kWilliamShooterRight = 23;
+    public static double kWilliamShooterPower = .9;
+
+    public static int kShootAngleCanId = 24;
+    public static int kWIlliamShooterIndexCanID = 25;
 
   }
 

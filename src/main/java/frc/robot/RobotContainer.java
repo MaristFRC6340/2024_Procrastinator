@@ -27,10 +27,12 @@ import frc.robot.commands.JohnShooterCommand;
 import frc.robot.commands.LaunchNoteCommand;
 import frc.robot.commands.ShoulderCommand;
 import frc.robot.commands.SpinUpShooterCommand;
+import frc.robot.commands.TransferToIndexerCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.JohnShooter;
 import frc.robot.subsystems.Shoulder;
+import frc.robot.subsystems.WilliamShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -57,10 +59,11 @@ import com.pathplanner.lib.path.PathPlannerPath;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  JohnShooter shooter = new JohnShooter();
+  //JohnShooter shooter = new JohnShooter();
   Shoulder shoulder = new Shoulder();
   IntakeSubsystem intake = new IntakeSubsystem();
-  
+  WilliamShooterSubsystem m_williamShooter = new WilliamShooterSubsystem();
+
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_shooterController = new XboxController(OIConstants.kShooterControllerPort);
@@ -73,10 +76,17 @@ public class RobotContainer {
   Trigger rBumper = new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value);
   Trigger lBumper = new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value);
 
+
+  //Trigger rightStickVertical = new Trigger(() -> {return Math.abs(m_shooterController.getRightY())>.1;});
+  Trigger y2 = new JoystickButton(m_shooterController, XboxController.Button.kY.value);
+  Trigger a2 = new JoystickButton(m_shooterController, XboxController.Button.kA.value);
+  Trigger x2 = new JoystickButton(m_shooterController, XboxController.Button.kX.value);
+  Trigger lBumper2 = new JoystickButton(m_shooterController, XboxController.Button.kLeftBumper.value);
+  Trigger rBumper2 = new JoystickButton(m_shooterController, XboxController.Button.kRightBumper.value);
   private final SendableChooser<Command> autoChooser;
 
   private final DriveCommand m_DriveCommand = new DriveCommand(m_robotDrive);
-
+  private final IntakeCommand m_IntakeCommand = new IntakeCommand(intake);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -97,7 +107,7 @@ public class RobotContainer {
     //         m_robotDrive));
 
     m_robotDrive.setDefaultCommand(m_DriveCommand);
-
+    intake.setDefaultCommand(m_IntakeCommand);
     //Create sendable chooser and give it to the smartdashboard
     autoChooser = AutoBuilder.buildAutoChooser("Example Auto2");
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -119,13 +129,19 @@ public class RobotContainer {
             m_robotDrive));
 
      // Y Shoots the Notes       
-     y.whileTrue(new SpinUpShooterCommand(shooter).withTimeout(2)
-                  .andThen(new LaunchNoteCommand(shooter)).handleInterrupt(() -> {shooter.feederPower(0); 
-                  shooter.shooterPower(0); shooter.indexerPower(0);} ));
+    //  y.whileTrue(new SpinUpShooterCommand(shooter).withTimeout(2)
+    //               .andThen(new LaunchNoteCommand(shooter)).handleInterrupt(() -> {shooter.feederPower(0); 
+    //               shooter.shooterPower(0); shooter.indexerPower(0);} ));
     
     // A Intakes the Notes with Shooter
-     a.whileTrue(shooter.getIndexerIntakeCommand());
+     //a.whileTrue(shooter.getIndexerIntakeCommand());
 
+     //rightStickVertical.whileTrue(intake.getRunIntakeCommand(m_shooterController.getRightY()));
+
+     y2.whileTrue(m_williamShooter.getSpinUpShooterCommand().withTimeout(2).handleInterrupt(() ->{m_williamShooter.stop();}).andThen(m_williamShooter.getLaunchNoteCommand()));
+     a2.whileTrue(new TransferToIndexerCommand(m_williamShooter, intake));
+     lBumper2.whileTrue(m_williamShooter.getReverseIndexerCommand());
+     rBumper2.whileTrue(m_williamShooter.getForwardIndexerCommand());
   }
 
   /**
@@ -187,12 +203,10 @@ public class RobotContainer {
   public Command getShoulderCommand(){
     return new ShoulderCommand(shoulder);
   }
-  public Command getShootCommand(){
-    return new JohnShooterCommand(shooter);
-  }
+
 
   public Command getIntakeCommand() {
-    return new IntakeCommand(intake);
+    return m_IntakeCommand;
   }
 
   public Command getOnTheFlyPath() {
