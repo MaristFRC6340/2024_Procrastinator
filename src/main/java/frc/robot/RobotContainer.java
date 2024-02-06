@@ -34,6 +34,7 @@ import frc.robot.subsystems.JohnShooter;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.WilliamShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -79,6 +80,8 @@ public class RobotContainer {
 
   //Trigger rightStickVertical = new Trigger(() -> {return Math.abs(m_shooterController.getRightY())>.1;});
   Trigger y2 = new JoystickButton(m_shooterController, XboxController.Button.kY.value);
+    Trigger b2 = new JoystickButton(m_shooterController, XboxController.Button.kB.value);
+
   Trigger a2 = new JoystickButton(m_shooterController, XboxController.Button.kA.value);
   Trigger x2 = new JoystickButton(m_shooterController, XboxController.Button.kX.value);
   Trigger lBumper2 = new JoystickButton(m_shooterController, XboxController.Button.kLeftBumper.value);
@@ -95,16 +98,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     // Configure default commands
-    // m_robotDrive.setDefaultCommand(
-    //     // The left stick controls translation of the robot.
-    //     // Turning is controlled by the X axis of the right stick.
-    //     new RunCommand(
-    //         () -> m_robotDrive.drive(
-    //             -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-    //             -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-    //             -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-    //             true, true),
-    //         m_robotDrive));
+    registerNamedCommands();
 
     m_robotDrive.setDefaultCommand(m_DriveCommand);
     intake.setDefaultCommand(m_IntakeCommand);
@@ -139,11 +133,20 @@ public class RobotContainer {
      //rightStickVertical.whileTrue(intake.getRunIntakeCommand(m_shooterController.getRightY()));
 
      y2.whileTrue(m_williamShooter.getSpinUpShooterCommand().withTimeout(2).handleInterrupt(() ->{m_williamShooter.stop();}).andThen(m_williamShooter.getLaunchNoteCommand()));
+      b2.whileTrue(m_williamShooter.getReverseShooterCommand().withTimeout(2).handleInterrupt(()->{m_williamShooter.stop();}));
+
      a2.whileTrue(new TransferToIndexerCommand(m_williamShooter, intake));
      lBumper2.whileTrue(m_williamShooter.getReverseIndexerCommand());
      rBumper2.whileTrue(m_williamShooter.getForwardIndexerCommand());
   }
 
+  /**
+   * Register all named commands for use in path planner in this method
+   */
+  private void registerNamedCommands() {
+    NamedCommands.registerCommand("runIntake", new TransferToIndexerCommand(m_williamShooter, intake));
+    NamedCommands.registerCommand("stopIntake", intake.getStopIntakeCommand());
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

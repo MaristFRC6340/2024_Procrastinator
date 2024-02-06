@@ -78,8 +78,8 @@ private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagni
       this::getRobotRelativeChassisSpeeds,
       this::driveRobotRelative,
       new HolonomicPathFollowerConfig(
-        new PIDConstants(0, 0, 0),
-        new PIDConstants(.21178125, .0, 0),
+        new PIDConstants(.7, 0, .2),
+        new PIDConstants(2, .0, 0),
         2,
         0.77,
         new ReplanningConfig()
@@ -98,7 +98,7 @@ private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagni
   public void periodic() {
     // Update the odometry in the periodic block
     m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),

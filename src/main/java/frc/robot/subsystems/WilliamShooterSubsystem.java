@@ -53,6 +53,9 @@ public class WilliamShooterSubsystem extends SubsystemBase{
 
         });
     }
+    public Command getReverseShooterCommand(){
+        return this.startEnd(()->setShooter(-ShooterConstants.kWilliamShooterPower), ()->{});
+    }
 
     public Command getLaunchNoteCommand() {
         return this.startEnd(() -> {

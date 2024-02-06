@@ -154,7 +154,7 @@ public final class Constants {
 
     public static final int kWilliamShooterLeft = 21;
     public static final int kWilliamShooterRight = 23;
-    public static double kWilliamShooterPower = .9;
+    public static double kWilliamShooterPower = .7;
 
     public static int kShootAngleCanId = 24;
     public static int kWIlliamShooterIndexCanID = 25;
@@ -164,5 +164,7 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int kIntakeAngleCanId = 31;
     public static final int kIntakeMotorCanId = 30;
+    public static final double kIntakePower = -.4;
+    public static final double intakeAngleKp = .4;
   }
 }

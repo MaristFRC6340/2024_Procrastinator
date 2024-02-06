@@ -30,7 +30,7 @@ public class TransferToIndexerCommand extends Command{
   @Override
   public void initialize() {
     m_IntakeSubsystem.runIntake();
-    m_WilliamShooterSubsystem.setIndexer(-.6);
+    m_WilliamShooterSubsystem.setIndexer(-.3);
   }
 
   // Called every time the scheduler runs while the command is scheduled. There should not be any listeners in this method.

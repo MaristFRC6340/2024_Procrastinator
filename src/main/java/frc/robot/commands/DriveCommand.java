@@ -98,7 +98,7 @@ public class DriveCommand extends Command {
                 MathUtil.applyDeadband(-leftY*speedControl, 0.06),
                 MathUtil.applyDeadband(-leftX*speedControl, 0.06),
                 MathUtil.applyDeadband(-rightX*speedControl, 0.06),
-                fieldCentric, true);
+                fieldCentric, false);
 
                 
     if(Robot.getDriveControlJoystick().getPOV()!=-1){ // Left Stick Button

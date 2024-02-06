@@ -5,21 +5,55 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
 
   private CANSparkMax intakeAngle;
+
+  private SparkPIDController intakeAnglePID;
+  private RelativeEncoder intakeAngleRelativeEncoder;
   private CANSparkMax intakeMotor;
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     intakeAngle = new CANSparkMax(Constants.IntakeConstants.kIntakeAngleCanId, MotorType.kBrushless);
     intakeMotor = new CANSparkMax(Constants.IntakeConstants.kIntakeMotorCanId, MotorType.kBrushless);
+
+    // getting encoder
+    intakeAngleRelativeEncoder = intakeAngle.getEncoder();
+
+    // getting PID controller
+    intakeAnglePID = intakeAngle.getPIDController();
+
+    intakeAnglePID.setP(Constants.IntakeConstants.intakeAngleKp);
+  }
+
+  public void goToPosition(double encoderCounts) {
+    // set pid Controller position reference
+    intakeAnglePID.setReference(encoderCounts, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void setPower(double pow) {
+    intakeMotor.set(pow);
+  }
+
+  public double getPosition() {
+    return intakeAngleRelativeEncoder.getPosition();
+  }
+
+  public void resetEncoder() {
+    intakeAngleRelativeEncoder.setPosition(0.0);
   }
 
   public void setIntakeAnglePower(double power){
@@ -31,11 +65,16 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void runIntake() {
-    intakeMotor.set(-.6);
+    intakeMotor.set(IntakeConstants.kIntakePower);
+  }
+
+  public void stop() {
+    intakeMotor.set(0);
   }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Wrist Encoder", getPosition());
   }
 
   public Command getRunIntakeCommand(double power) {
@@ -48,4 +87,7 @@ public class IntakeSubsystem extends SubsystemBase {
       });
   }
 
+  public Command getStopIntakeCommand() {
+    return this.runOnce(() -> {stop();});
+  }
 }

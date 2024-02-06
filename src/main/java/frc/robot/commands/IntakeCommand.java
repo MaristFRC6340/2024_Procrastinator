@@ -4,12 +4,13 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class IntakeCommand extends Command {
-
+  private double intakePos;
   private IntakeSubsystem m_IntakeSubsystem;
   /** Creates a new IntakeCommand. */
   public IntakeCommand(IntakeSubsystem intakeSubsystem) {
@@ -21,7 +22,7 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    intakePos = m_IntakeSubsystem.getPosition();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -30,30 +31,35 @@ public class IntakeCommand extends Command {
     // Get Value and Set Intake Power
     double intakePower = Robot.getShooterControlJoystick().getLeftTriggerAxis() - Robot.getShooterControlJoystick().getRightTriggerAxis();
 
-    double leftStick = Robot.getShooterControlJoystick().getLeftY();
-    if(Math.abs(leftStick)<.2) leftStick = 0;
-    // Get Value and Set Angle Power
-    double anglePower = leftStick;
+    // if(Math.abs(leftStick)<.2) leftStick = 0;
+    // // Get Value and Set Angle Power
+    // double anglePower = leftStick;
 
-    
+    // // Speed Controller
+    // if (anglePower > 0.2) {
+    //   anglePower = 0.2;
+    // }
+    // if (anglePower < -0.2) {
+    //   anglePower = -0.2;
+    // }
 
-    // Speed Controller
-    if (anglePower > 0.2) {
-      anglePower = 0.2;
-    }
-    if (anglePower < -0.2) {
-      anglePower = -0.2;
-    }
+    // //Intake Power Controller
+    // if (intakePower > 0.5) {
+    //   intakePower = 0.5;
+    // }
+    // if (intakePower < -0.5) {
+    //   intakePower = -0.5;
+    // }
 
-    //Intake Power Controller
-    if (intakePower > 0.5) {
-      intakePower = 0.5;
-    }
-    if (intakePower < -0.5) {
-      intakePower = -0.5;
-    }
+      //  if(Math.abs(MathUtil.applyDeadband(-Robot.getShooterControlJoystick().getLeftY(),.02))>0){//the joystick is used to make microadjustments
+      //   m_IntakeSubsystem.setPower(MathUtil.applyDeadband(-Robot.getShooterControlJoystick().getLeftY(), .06)/5.0);
+      //   intakePos = m_IntakeSubsystem.getPosition();
+      // }
+      // else{//otherwise hold the current position
+      //   m_IntakeSubsystem.goToPosition(intakePos);
+      // }
 
-    m_IntakeSubsystem.setIntakeAnglePower(anglePower);
+    //m_IntakeSubsystem.setIntakeAnglePower(anglePower);
     m_IntakeSubsystem.setIntakeMotorPower(intakePower);
   }
 
