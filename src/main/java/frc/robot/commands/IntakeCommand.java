@@ -51,13 +51,13 @@ public class IntakeCommand extends Command {
     //   intakePower = -0.5;
     // }
 
-      //  if(Math.abs(MathUtil.applyDeadband(-Robot.getShooterControlJoystick().getLeftY(),.02))>0){//the joystick is used to make microadjustments
-      //   m_IntakeSubsystem.setPower(MathUtil.applyDeadband(-Robot.getShooterControlJoystick().getLeftY(), .06)/5.0);
-      //   intakePos = m_IntakeSubsystem.getPosition();
-      // }
-      // else{//otherwise hold the current position
-      //   m_IntakeSubsystem.goToPosition(intakePos);
-      // }
+       if(Math.abs(MathUtil.applyDeadband(-Robot.getShooterControlJoystick().getLeftY(),.02))>0){//the joystick is used to make microadjustments
+        m_IntakeSubsystem.setIntakeAnglePower(MathUtil.applyDeadband(-Robot.getShooterControlJoystick().getLeftY(), .06)/5.0);
+        intakePos = m_IntakeSubsystem.getPosition();
+      }
+      else{//otherwise hold the current position
+        m_IntakeSubsystem.goToPosition(intakePos);
+      }
 
     //m_IntakeSubsystem.setIntakeAnglePower(anglePower);
     m_IntakeSubsystem.setIntakeMotorPower(intakePower);
