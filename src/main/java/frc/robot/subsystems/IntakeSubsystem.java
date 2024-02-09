@@ -30,6 +30,9 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeAngle = new CANSparkMax(Constants.IntakeConstants.kIntakeAngleCanId, MotorType.kBrushless);
     intakeMotor = new CANSparkMax(Constants.IntakeConstants.kIntakeMotorCanId, MotorType.kBrushless);
 
+    //Set Current Limits
+    intakeAngle.setSmartCurrentLimit(40);
+    intakeMotor.setSmartCurrentLimit(40);
     // getting encoder
     intakeAngleRelativeEncoder = intakeAngle.getEncoder();
 
@@ -45,7 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setPower(double pow) {
-    intakeMotor.set(pow);
+    intakeMotor.set(-pow);
   }
 
   public double getPosition() {
@@ -61,7 +64,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setIntakeMotorPower(double power){
-    intakeMotor.set(power);
+    intakeMotor.set(-power);
   }
 
   public void runIntake() {
@@ -89,5 +92,17 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command getStopIntakeCommand() {
     return this.runOnce(() -> {stop();});
+  }
+
+  public Command getIntakeDownCommand() {
+    return this.startEnd( () -> {
+      goToPosition(IntakeConstants.kIntakeAngleDown);
+    }, () ->{});
+  }
+
+  public Command getRunToPositionCommand(double position) {
+    return this.startEnd(() -> {
+      goToPosition(position);
+    }, () -> {});
   }
 }

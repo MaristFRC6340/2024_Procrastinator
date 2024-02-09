@@ -11,12 +11,12 @@ public class WilliamShooterSubsystem extends SubsystemBase{
     
     private CANSparkMax leftMotor;
     private CANSparkMax rightMotor;
-    private CANSparkMax indexMotor;
     public WilliamShooterSubsystem() {
         leftMotor = new CANSparkMax(ShooterConstants.kWilliamShooterLeft, MotorType.kBrushless);
         rightMotor = new CANSparkMax(ShooterConstants.kWilliamShooterRight, MotorType.kBrushless);
 
-        indexMotor = new CANSparkMax(ShooterConstants.kWIlliamShooterIndexCanID, MotorType.kBrushed);
+        leftMotor.setSmartCurrentLimit(40);
+        rightMotor.setSmartCurrentLimit(40);
     }
 
     public void setShooter(double power) {
@@ -27,15 +27,17 @@ public class WilliamShooterSubsystem extends SubsystemBase{
     public void spinUp() {
         leftMotor.set(ShooterConstants.kWilliamShooterPower);
         rightMotor.set(ShooterConstants.kWilliamShooterPower);
+        //leftMotor.set(ShooterConstants.kWilliamShooterPowerSafe);
+        //rightMotor.set(ShooterConstants.kWilliamShooterPowerSafe);
+
     }
 
-    public void setIndexer(double power) {
-        indexMotor.set(power);
-    }
+    // public void setIndexer(double power) {
+    //     indexMotor.set(power);
+    // }
     public void stop() {
         leftMotor.set(0);
         rightMotor.set(0);
-        indexMotor.set(0);
     }
 
     public Command getStartShooterCommand() {
@@ -54,31 +56,32 @@ public class WilliamShooterSubsystem extends SubsystemBase{
         });
     }
     public Command getReverseShooterCommand(){
-        return this.startEnd(()->setShooter(ShooterConstants.kWilliamShooterPower), ()->{});
+        return this.startEnd(()->setShooter(ShooterConstants.kWilliamShooterIntake), ()->{stop();});
     }
 
-    public Command getLaunchNoteCommand() {
-        return this.startEnd(() -> {
-            spinUp();
-            setIndexer(1);
-        }, () ->{
-            stop();
-        });
-    }
+    // public Command getLaunchNoteCommand() {
+    //     return this.startEnd(() -> {
+    //         spinUp();
+    //         setIndexer(1); 
+    //     }, () ->{
+    //         stop();
+    //     });
+    // }
 
-    public Command getReverseIndexerCommand() {
-        return this.startEnd(() -> {
-            setIndexer(.3);
-        }, () -> {
-            setIndexer(0);
-        });
-    }
+    // public Command getReverseIndexerCommand() {
+    //     return this.startEnd(() -> {
+    //         setIndexer(.3);
+    //     }, () -> {
+    //         setIndexer(0);
+    //     });
+    // }
 
-    public Command getForwardIndexerCommand() {
-        return this.startEnd(() -> {
-            setIndexer(-.3);
-        }, () -> {
-            setIndexer(0);
-        });
-    }
+    // public Command getForwardIndexerCommand() {
+    //     return this.startEnd(() -> {
+    //         setIndexer(-.3);
+    //     }, () -> {
+    //         setIndexer(0);
+    //     });
+    // }
+
 }

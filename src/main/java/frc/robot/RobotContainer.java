@@ -13,6 +13,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
@@ -20,8 +23,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.DriveToShootCommand;
+import frc.robot.commands.DriveToSourceCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.JohnShooterCommand;
 import frc.robot.commands.LaunchNoteCommand;
@@ -29,12 +35,16 @@ import frc.robot.commands.ShoulderCommand;
 import frc.robot.commands.SpinUpShooterCommand;
 import frc.robot.commands.TransferToIndexerCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.JohnShooter;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.WilliamShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -64,7 +74,7 @@ public class RobotContainer {
   Shoulder shoulder = new Shoulder();
   IntakeSubsystem intake = new IntakeSubsystem();
   WilliamShooterSubsystem m_williamShooter = new WilliamShooterSubsystem();
-
+  IndexerSubsystem m_IndexerSubsystem = new IndexerSubsystem();
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_shooterController = new XboxController(OIConstants.kShooterControllerPort);
@@ -90,11 +100,18 @@ public class RobotContainer {
 
   private final DriveCommand m_DriveCommand = new DriveCommand(m_robotDrive);
   private final IntakeCommand m_IntakeCommand = new IntakeCommand(intake);
+
+  //Limelight values
+  private static NetworkTable limTable;
+  private static NetworkTableEntry tid;
+  private static int id;
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
+    //Initialize Limelight values for use in configure
+    limTable = NetworkTableInstance.getDefault().getTable("limelight");
+    tid = limTable.getEntry("tid");
     // Configure the button bindings
     configureButtonBindings();
     // Configure default commands
@@ -103,8 +120,10 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand(m_DriveCommand);
     intake.setDefaultCommand(m_IntakeCommand);
     //Create sendable chooser and give it to the smartdashboard
-    autoChooser = AutoBuilder.buildAutoChooser("Example Auto2");
+    autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    
   }
 
   /**
@@ -132,20 +151,40 @@ public class RobotContainer {
 
      //rightStickVertical.whileTrue(intake.getRunIntakeCommand(m_shooterController.getRightY()));
 
-     y2.whileTrue(m_williamShooter.getSpinUpShooterCommand().withTimeout(2).handleInterrupt(() ->{m_williamShooter.stop();}).andThen(m_williamShooter.getLaunchNoteCommand()));
-      b2.whileTrue(m_williamShooter.getReverseShooterCommand().withTimeout(2).handleInterrupt(()->{m_williamShooter.stop();}));
+     y2.whileTrue(m_williamShooter.getSpinUpShooterCommand().withTimeout(2).handleInterrupt(() ->{m_williamShooter.stop();}).andThen(new LaunchNoteCommand(m_williamShooter, m_IndexerSubsystem)));
+      b2.whileTrue(m_williamShooter.getReverseShooterCommand().handleInterrupt(()->{m_williamShooter.stop();}));
 
-     a2.whileTrue(new TransferToIndexerCommand(m_williamShooter, intake));
-     lBumper2.whileTrue(m_williamShooter.getReverseIndexerCommand());
-     rBumper2.whileTrue(m_williamShooter.getForwardIndexerCommand());
+     a2.whileTrue(intake.getRunToPositionCommand(IntakeConstants.kIntakeTransfer).withTimeout(1)
+     .andThen(new TransferToIndexerCommand(m_IndexerSubsystem, intake)));
+
+     x2.whileTrue(intake.run(() -> {intake.goToPosition(IntakeConstants.kIntakeAngleDown);}));
+     lBumper2.whileTrue(m_IndexerSubsystem.getReverseIndexerCommand());
+     rBumper2.whileTrue(m_IndexerSubsystem.getForwardIndexerCommand());
+
+     //b.whileTrue(new DriveToAprilTagCommand(m_robotDrive).andThen(m_williamShooter.getSpinUpShooterCommand().withTimeout(2).handleInterrupt(() ->{m_williamShooter.stop();}).andThen(new LaunchNoteCommand(m_williamShooter, m_IndexerSubsystem))));
+      b.whileTrue(new SequentialCommandGroup(
+        new ParallelDeadlineGroup(
+            new ParallelCommandGroup(new DriveToShootCommand(m_robotDrive), new WaitCommand(2)), m_williamShooter.getSpinUpShooterCommand()
+        ).handleInterrupt(() -> {m_williamShooter.stop();}),
+        new LaunchNoteCommand(m_williamShooter, m_IndexerSubsystem)
+      ));
+      a.whileTrue(new DriveToSourceCommand(m_robotDrive, m_williamShooter, m_IndexerSubsystem));
+      
   }
 
   /**
    * Register all named commands for use in path planner in this method
    */
   private void registerNamedCommands() {
-    NamedCommands.registerCommand("runIntake", new TransferToIndexerCommand(m_williamShooter, intake));
+    NamedCommands.registerCommand("runIntake", new TransferToIndexerCommand(m_IndexerSubsystem, intake));
     NamedCommands.registerCommand("stopIntake", intake.getStopIntakeCommand());
+    NamedCommands.registerCommand("spinUpShooter", m_williamShooter.getSpinUpShooterCommand());
+    NamedCommands.registerCommand("launchNote", new LaunchNoteCommand(m_williamShooter, m_IndexerSubsystem));
+    NamedCommands.registerCommand("stopShooter", new InstantCommand( () -> {m_williamShooter.stop();}));
+    NamedCommands.registerCommand("intakeDown", intake.getIntakeDownCommand().withTimeout(.4));
+    NamedCommands.registerCommand("intakeAngleToTransfer", intake.getRunToPositionCommand(IntakeConstants.kIntakeTransfer));
+    NamedCommands.registerCommand("runIntakeSlow", intake.getRunIntakeCommand(-.2));
+    NamedCommands.registerCommand("intakeSlightReverse", intake.getRunIntakeCommand(.3).withTimeout(.1));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -231,7 +270,13 @@ public class RobotContainer {
   }
 
 
+  public static void updateID() {
+    id = (int)tid.getDouble(0);
+  }
   
+  public static int getID() {
+    return id;
+  }
 
 
 }

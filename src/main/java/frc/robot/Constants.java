@@ -142,10 +142,11 @@ public final class Constants {
   }
 
   public static final class LimelightConstants{
-    public static final double speakerAimtx = -20.89;
-    public static final double speakerAimty = 2.82;
-    public static final double kPX = .01;
-    public static final double kPY = .01;
+    public static final double speakerAimtx = 0;
+    public static final double speakerAimty = -13;
+    public static final double kPX = .03;
+    public static final double kPY = .03;
+    public static double tolerance = 1;
   }
 
   public static final class ShooterConstants {
@@ -154,8 +155,10 @@ public final class Constants {
 
     public static final int kWilliamShooterLeft = 21;
     public static final int kWilliamShooterRight = 23;
-    public static double kWilliamShooterPower = .7;
+    public static double kWilliamShooterPower = .7; // Mid line Shot
+    public static double kWilliamShooterPowerSafe = 0.5; // Safe Zone Shot
 
+    public static double kWilliamShooterIntake = .3;
     public static int kShootAngleCanId = 24;
     public static int kWIlliamShooterIndexCanID = 25;
 
@@ -166,5 +169,16 @@ public final class Constants {
     public static final int kIntakeMotorCanId = 30;
     public static final double kIntakePower = -.4;
     public static final double intakeAngleKp = .4;
+
+    public static final double kIntakeAngleDown = 75;
+    public static final double kIntakeAngleUp = 5;
+    public static final double kIntakeTransfer = 41;
+    public static final double kAmpAngle = 17.333301544189453;
+  }
+  
+  public static final class IndexerConstants {
+    public static final int kIndexerMotorCanID = 25;
+    public static final double kIndexerTransferPower = .3;
+    public static final double kIndexerLaunchPower = -.9;
   }
 }
