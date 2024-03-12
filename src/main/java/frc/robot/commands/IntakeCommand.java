@@ -32,10 +32,10 @@ public class IntakeCommand extends Command {
     double intakePower = Robot.getShooterControlJoystick().getLeftTriggerAxis() - Robot.getShooterControlJoystick().getRightTriggerAxis();
 
     if(intakePower>.2) {
-      m_IntakeSubsystem.setIntakeMotorPower(.3);
+      m_IntakeSubsystem.setIntakeMotorPower(.525); // original is 3
     }
     else if(intakePower<-.2) {
-      m_IntakeSubsystem.setIntakeMotorPower(-.3);
+      m_IntakeSubsystem.setIntakeMotorPower(-.525); // original is -3
     }
     else {
       m_IntakeSubsystem.setIntakeMotorPower(0);

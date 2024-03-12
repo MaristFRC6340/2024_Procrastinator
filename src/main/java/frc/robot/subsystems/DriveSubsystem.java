@@ -294,5 +294,4 @@ private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagni
   public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     this.drive(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond, false, false);
   }
-
 }

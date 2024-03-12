@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -147,6 +149,7 @@ public final class Constants {
     public static final double kPX = .03;
     public static final double kPY = .03;
     public static double tolerance = 1;
+    public static Pose2d kShootPose = new Pose2d(0, 2.2, new Rotation2d(Math.toRadians(0)));
   }
 
   public static final class ShooterConstants {

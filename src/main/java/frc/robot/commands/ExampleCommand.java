@@ -24,13 +24,13 @@ public class ExampleCommand extends Command{
     //Called once when the command is initialized. 
   @Override
   public void initialize() {
-
+      
   }
 
   // Called every time the scheduler runs while the command is scheduled. There should not be any listeners in this method.
   @Override
   public void execute() {
-
+    
   }
 
   // Called once the command ends or is interrupted.

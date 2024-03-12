@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.commands.LEDCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -38,8 +40,11 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.JohnShooter;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.WilliamShooterSubsystem;
+import frc.robot.subsystems.LEDSubsystem.LEDPattern;
+import frc.robot.subsystems.LEDSubsystem.LEDState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -70,9 +75,10 @@ import com.pathplanner.lib.path.PathPlannerPath;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final LEDSubsystem leds = new LEDSubsystem();
   //JohnShooter shooter = new JohnShooter();
-  Shoulder shoulder = new Shoulder();
-  IntakeSubsystem intake = new IntakeSubsystem();
+  //Shoulder shoulder = new Shoulder();
+  //IntakeSubsystem intake = new IntakeSubsystem();
   WilliamShooterSubsystem m_williamShooter = new WilliamShooterSubsystem();
   IndexerSubsystem m_IndexerSubsystem = new IndexerSubsystem();
   // The driver's controller
@@ -99,7 +105,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   private final DriveCommand m_DriveCommand = new DriveCommand(m_robotDrive);
-  private final IntakeCommand m_IntakeCommand = new IntakeCommand(intake);
+  //private final IntakeCommand m_IntakeCommand = new IntakeCommand(intake);
 
   //Limelight values
   private static NetworkTable limTable;
@@ -118,7 +124,10 @@ public class RobotContainer {
     registerNamedCommands();
 
     m_robotDrive.setDefaultCommand(m_DriveCommand);
-    intake.setDefaultCommand(m_IntakeCommand);
+    LEDState states = new LEDState(80).fillAlternating(new Color[]{new Color(255,0,0), new Color(0,255,0)});
+    LEDPattern pattern = LEDPattern.shiftPattern(states, id);
+    new LEDCommand(pattern, leds).schedule();
+    //intake.setDefaultCommand(m_IntakeCommand);
     //Create sendable chooser and give it to the smartdashboard
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -142,7 +151,7 @@ public class RobotContainer {
             m_robotDrive));
 
      // Y Shoots the Notes       
-    //  y.whileTrue(new SpinUpShooterCommand(shooter).withTimeout(2)
+    //y.whileTrue(new SpinUpShooterCommand(shooter).withTimeout(2)
     //               .andThen(new LaunchNoteCommand(shooter)).handleInterrupt(() -> {shooter.feederPower(0); 
     //               shooter.shooterPower(0); shooter.indexerPower(0);} ));
     
@@ -151,24 +160,46 @@ public class RobotContainer {
 
      //rightStickVertical.whileTrue(intake.getRunIntakeCommand(m_shooterController.getRightY()));
 
-     y2.whileTrue(m_williamShooter.getSpinUpShooterCommand().withTimeout(2).handleInterrupt(() ->{m_williamShooter.stop();}).andThen(new LaunchNoteCommand(m_williamShooter, m_IndexerSubsystem)));
+      //y2.whileTrue(m_williamShooter.getSpinUpShooterCommand().withTimeout(2).handleInterrupt(() ->{m_williamShooter.stop();}).andThen(new LaunchNoteCommand(m_williamShooter, m_IndexerSubsystem)));
+      
+      
+      // Intake 
       b2.whileTrue(m_williamShooter.getReverseShooterCommand().handleInterrupt(()->{m_williamShooter.stop();}));
+      
+      y2.onTrue(m_williamShooter.getSpinUpShooterCommand().withTimeout(0.75)
+                                  .andThen(m_IndexerSubsystem.getForwardIndexerCommand().withTimeout(0.5))
+                                  .andThen(m_williamShooter.stopShooterCommand()
+                                  .andThen(m_IndexerSubsystem.stopIndexerCommand()))
+      );
+                    
+      /*  
+      new SequentialCommandGroup(m_williamShooter.getSpinUpShooterCommand().withTimeout(1),
+                                               new WaitCommand(1),
+                                              m_IndexerSubsystem.getForwardIndexerCommand().withTimeout(1),
+                                              new WaitCommand(1),
+                                              m_williamShooter.stopShooterCommand(),
+                                              m_IndexerSubsystem.stopIndexerCommand())
+      );
+      */
 
-     a2.whileTrue(intake.getRunToPositionCommand(IntakeConstants.kIntakeTransfer).withTimeout(1)
-     .andThen(new TransferToIndexerCommand(m_IndexerSubsystem, intake)));
+      //  a2.whileTrue(intake.getRunToPositionCommand(IntakeConstants.kIntakeTransfer).withTimeout(1)
+      //  .andThen(new TransferToIndexerCommand(m_IndexerSubsystem, intake)));
 
-     x2.whileTrue(intake.run(() -> {intake.goToPosition(IntakeConstants.kIntakeAngleDown);}));
+     //x2.whileTrue(intake.run(() -> {intake.goToPosition(IntakeConstants.kIntakeAngleDown);}));
      lBumper2.whileTrue(m_IndexerSubsystem.getReverseIndexerCommand());
      rBumper2.whileTrue(m_IndexerSubsystem.getForwardIndexerCommand());
 
      //b.whileTrue(new DriveToAprilTagCommand(m_robotDrive).andThen(m_williamShooter.getSpinUpShooterCommand().withTimeout(2).handleInterrupt(() ->{m_williamShooter.stop();}).andThen(new LaunchNoteCommand(m_williamShooter, m_IndexerSubsystem))));
-      b.whileTrue(new SequentialCommandGroup(
+     /*  
+     b.whileTrue(new SequentialCommandGroup(
         new ParallelDeadlineGroup(
             new ParallelCommandGroup(new DriveToShootCommand(m_robotDrive), new WaitCommand(2)), m_williamShooter.getSpinUpShooterCommand()
         ).handleInterrupt(() -> {m_williamShooter.stop();}),
         new LaunchNoteCommand(m_williamShooter, m_IndexerSubsystem)
       ));
-      a.whileTrue(new DriveToSourceCommand(m_robotDrive, m_williamShooter, m_IndexerSubsystem));
+      */
+
+      //a.whileTrue(new DriveToSourceCommand(m_robotDrive, m_williamShooter, m_IndexerSubsystem));
       
   }
 
@@ -176,15 +207,16 @@ public class RobotContainer {
    * Register all named commands for use in path planner in this method
    */
   private void registerNamedCommands() {
-    NamedCommands.registerCommand("runIntake", new TransferToIndexerCommand(m_IndexerSubsystem, intake));
-    NamedCommands.registerCommand("stopIntake", intake.getStopIntakeCommand());
+   // NamedCommands.registerCommand("runIntake", new TransferToIndexerCommand(m_IndexerSubsystem, intake));
+    //NamedCommands.registerCommand("stopIntake", intake.getStopIntakeCommand());
     NamedCommands.registerCommand("spinUpShooter", m_williamShooter.getSpinUpShooterCommand());
     NamedCommands.registerCommand("launchNote", new LaunchNoteCommand(m_williamShooter, m_IndexerSubsystem));
     NamedCommands.registerCommand("stopShooter", new InstantCommand( () -> {m_williamShooter.stop();}));
-    NamedCommands.registerCommand("intakeDown", intake.getIntakeDownCommand().withTimeout(.4));
-    NamedCommands.registerCommand("intakeAngleToTransfer", intake.getRunToPositionCommand(IntakeConstants.kIntakeTransfer));
-    NamedCommands.registerCommand("runIntakeSlow", intake.getRunIntakeCommand(-.2));
-    NamedCommands.registerCommand("intakeSlightReverse", intake.getRunIntakeCommand(.3).withTimeout(.1));
+    //NamedCommands.registerCommand("intakeDown", intake.getIntakeDownCommand().withTimeout(.4));
+    //NamedCommands.registerCommand("intakeAngleToTransfer", intake.getRunToPositionCommand(IntakeConstants.kIntakeTransfer));
+    //NamedCommands.registerCommand("runIntakeSlow", intake.getRunIntakeCommand(-.2));
+    //NamedCommands.registerCommand("intakeSlightReverse", intake.getRunIntakeCommand(.3).withTimeout(.1));
+    NamedCommands.registerCommand("driveToShoot", new DriveToShootCommand(m_robotDrive));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -242,14 +274,14 @@ public class RobotContainer {
   public Command getDriveCommand() {
     return m_DriveCommand;
   }
-  public Command getShoulderCommand(){
-    return new ShoulderCommand(shoulder);
-  }
+  // public Command getShoulderCommand(){
+  //   return new ShoulderCommand(shoulder);
+  // }
 
 
-  public Command getIntakeCommand() {
-    return m_IntakeCommand;
-  }
+  // public Command getIntakeCommand() {
+  //   return m_IntakeCommand;
+  // }
 
   public Command getOnTheFlyPath() {
     List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(

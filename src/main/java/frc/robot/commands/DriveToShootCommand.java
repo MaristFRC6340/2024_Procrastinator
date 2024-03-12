@@ -19,6 +19,7 @@ public class DriveToShootCommand extends Command{
     private NetworkTableEntry ledMode;
     private NetworkTableEntry ty;
     private DriveSubsystem m_DriveSubsystem;
+    boolean auto = false;
     //Create an instance of whatever subsystems you will use for this command. Example: private ExampleSubsystem m_ExampleSubsystem;
     
     //Change this from "ExampleCommand" to whatever you are naming this command
@@ -32,6 +33,19 @@ public class DriveToShootCommand extends Command{
         ledMode = limTable.getEntry("ledMode");
         tx = limTable.getEntry("tx");
         ty = limTable.getEntry("ty");
+    }
+
+    public DriveToShootCommand(DriveSubsystem drive, boolean auto) {
+        m_DriveSubsystem = drive;
+        addRequirements(drive);
+
+        //Limelight init
+        limTable = NetworkTableInstance.getDefault().getTable("limelight");
+        ledMode = limTable.getEntry("ledMode");
+        tx = limTable.getEntry("tx");
+        ty = limTable.getEntry("ty");
+
+        this.auto=auto;
     }
 
     //Called once when the command is initialized. 
@@ -71,6 +85,9 @@ public class DriveToShootCommand extends Command{
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    if(auto) {
+      m_DriveSubsystem.resetOdometry(LimelightConstants.kShootPose);
+    }
     ledMode.setDouble(1);
     m_DriveSubsystem.drive(0, 0, 0, false, false);
   }

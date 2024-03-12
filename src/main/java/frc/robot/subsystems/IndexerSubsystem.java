@@ -33,7 +33,15 @@ public class IndexerSubsystem extends SubsystemBase{
 
     public Command getForwardIndexerCommand() {
         return this.startEnd(() -> {
-            setIndexerPower(-.3);
+            setIndexerPower(-.9);
+        }, () -> {
+            stop();
+        });
+    }
+
+    public Command stopIndexerCommand() {
+        return this.startEnd( () -> {
+            stop();
         }, () -> {
             stop();
         });

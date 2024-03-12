@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
 
   private Command m_driveCommand;
 
-  private Command m_shoulderCommand;
+ // private Command m_shoulderCommand;
 
 
 
@@ -108,11 +108,11 @@ public class Robot extends TimedRobot {
 
     //m_shooterCommand = m_robotContainer.getShootCommand();
     m_driveCommand = m_robotContainer.getDriveCommand();
-    m_shoulderCommand = m_robotContainer.getShoulderCommand();
+    //m_shoulderCommand = m_robotContainer.getShoulderCommand();
 
-    m_shoulderCommand.schedule();
+   // m_shoulderCommand.schedule();
     //m_driveCommand.schedule();
-    m_robotContainer.getIntakeCommand().schedule();
+   // m_robotContainer.getIntakeCommand().schedule();
 
 
 
@@ -122,6 +122,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     RobotContainer.updateID();
+    
+
   }
 
   @Override

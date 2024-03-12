@@ -40,6 +40,16 @@ public class WilliamShooterSubsystem extends SubsystemBase{
         rightMotor.set(0);
     }
 
+    public Command stopShooterCommand() {
+        return this.startEnd( () -> {
+            stop();
+        }, () -> {
+            stop();
+        });
+    }
+
+
+    
     public Command getStartShooterCommand() {
         return this.startEnd( () -> {
             spinUp();
@@ -58,6 +68,8 @@ public class WilliamShooterSubsystem extends SubsystemBase{
     public Command getReverseShooterCommand(){
         return this.startEnd(()->setShooter(ShooterConstants.kWilliamShooterIntake), ()->{stop();});
     }
+
+
 
     // public Command getLaunchNoteCommand() {
     //     return this.startEnd(() -> {

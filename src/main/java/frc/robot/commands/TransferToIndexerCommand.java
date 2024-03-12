@@ -31,7 +31,7 @@ public class TransferToIndexerCommand extends Command{
     //Called once when the command is initialized. 
   @Override
   public void initialize() {
-    m_IntakeSubsystem.setPower(-.5);
+    m_IntakeSubsystem.setPower(-.8); // Original was -0.5
     m_IndexerSubsystem.setIndexerPower(.2);
   }
 
