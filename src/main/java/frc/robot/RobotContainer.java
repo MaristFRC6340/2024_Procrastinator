@@ -57,6 +57,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -75,7 +76,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final LEDSubsystem leds = new LEDSubsystem();
   //JohnShooter shooter = new JohnShooter();
   //Shoulder shoulder = new Shoulder();
   //IntakeSubsystem intake = new IntakeSubsystem();
@@ -111,6 +111,9 @@ public class RobotContainer {
   private static NetworkTable limTable;
   private static NetworkTableEntry tid;
   private static int id;
+  public static final int ledLength = 161;
+  private final LEDSubsystem leds = new LEDSubsystem(ledLength);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -124,9 +127,12 @@ public class RobotContainer {
     registerNamedCommands();
 
     m_robotDrive.setDefaultCommand(m_DriveCommand);
-    LEDState states = new LEDState(80).fillAlternating(new Color[]{new Color(255,0,0), new Color(0,255,0)});
-    LEDPattern pattern = LEDPattern.shiftPattern(states, id);
-    new LEDCommand(pattern, leds).schedule();
+  LEDState states = new LEDState(ledLength).fillAlternating(new Color[]{new Color(255,255,255), new Color(99,194,210), new Color(24,75,89), new Color(13, 50,63)});
+    LEDPattern pattern = LEDPattern.shiftPattern(states,100);
+    //LEDPattern pattern = new LEDPattern(1000,new LEDState[]{states});
+
+
+    leds.setDefaultCommand(new LEDCommand(pattern, leds));
     //intake.setDefaultCommand(m_IntakeCommand);
     //Create sendable chooser and give it to the smartdashboard
     autoChooser = AutoBuilder.buildAutoChooser();

@@ -9,14 +9,30 @@ public class LEDCommand extends Command{
     
     LEDPattern pattern;
     LEDSubsystem leds;
+    double timeout;
+    double startTimeNano = 0;
     public LEDCommand(LEDPattern pattern, LEDSubsystem leds){
         this.pattern = pattern;
         this.leds = leds;
+        this.timeout = pattern.restTime;
+        addRequirements(leds);
     }
-
+    @Override
+    public void initialize(){
+        startTimeNano = System.nanoTime();
+        leds.setColors(pattern.getCurrentLEDState());
+    }
     @Override
     public void execute(){
-        leds.setColors(pattern.getCurrentLEDState());
+        double timeElapsed = (System.nanoTime()-startTimeNano)/1000000.0;
+        if(timeElapsed>timeout){
+            leds.setColors(pattern.getCurrentLEDState());
+            startTimeNano = System.nanoTime();
+            System.out.println("WORKING");
+
+        }
+
+
     }
     @Override
     public boolean isFinished(){

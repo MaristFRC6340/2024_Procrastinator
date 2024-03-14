@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.Arrays;
 import java.util.Random;
 
 public class LEDSubsystem extends SubsystemBase{
@@ -11,9 +13,9 @@ public class LEDSubsystem extends SubsystemBase{
     AddressableLED ledStrip;
     AddressableLEDBuffer ledBuffer;
 
-    public LEDSubsystem(){
+    public LEDSubsystem(int length){
         ledStrip = new AddressableLED(9);
-        ledBuffer = new AddressableLEDBuffer(20);
+        ledBuffer = new AddressableLEDBuffer(length);
         ledStrip.setLength(ledBuffer.getLength());
 
         // Set the data
@@ -32,7 +34,7 @@ public class LEDSubsystem extends SubsystemBase{
           //Get the color at that index in the ledState object
             Color c = ledState.getColorList()[i];
             //set the color to the buffer
-            ledBuffer.setRGB(i, (int)c.red, (int)c.green, (int)c.blue);
+            ledBuffer.setRGB(i, (int)(255*c.red), (int)(255*c.green), (int)(255*c.blue));
          }
          //Send the buffer data to the stirp
          ledStrip.setData(ledBuffer);
@@ -85,6 +87,11 @@ public class LEDSubsystem extends SubsystemBase{
             rand = new Random();
             leds = new Color[length];
 
+        }
+        public LEDState(Color[] leds){
+            this.leds = leds;
+            rand = new Random();
+            length = leds.length;
         }
 
 
@@ -172,18 +179,18 @@ public class LEDSubsystem extends SubsystemBase{
         public LEDState shift(int shiftBy){
             Color[] temp = new Color[length];
 
-            int effectiveShift = (int) (shiftBy % length);
-            if (effectiveShift < 0) {
-                effectiveShift += length; // Handle negative shifts
-            }
-
-            for (int i = 0; i < length; i++) {
-                int newIndex = (i + effectiveShift) % length;
+            for(int i = 0; i < length; i++){
+                int newIndex = i+shiftBy;
+                if(newIndex >=length){
+                    newIndex-=length;
+                }
                 temp[newIndex] = leds[i];
             }
-            System.arraycopy(temp, 0, leds, 0, length);
 
-            return this;
+            
+            
+            return new LEDState(temp);
+            
         }
 
     }
